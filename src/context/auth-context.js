@@ -1,4 +1,4 @@
-import React, { useState } from "react";
+import React, { useState, useEffect } from "react";
 
 const AuthContext = React.createContext({
     isLoggedIn: false,
@@ -7,14 +7,24 @@ const AuthContext = React.createContext({
 });
 
 export const AuthContextProvider = (props) => {
-    const [isLoggedIn, setIsloggedIn] = useState(false);
+    const [isLoggedIn, setIsLoggedIn] = useState(false);
+
+      useEffect(() => {
+        const storeUserLoggedIn = localStorage.getItem('isLoggedIn'); // get from local storage which is global variable
+        if (storeUserLoggedIn === '1') {
+            setIsLoggedIn(true);
+        }
+    }, []);
+
 
     const logoutHandler = () => {
-        setIsloggedIn(false);
+        localStorage.removeItem('isLoggedIn'); // remove from local storage which is global variable
+        setIsLoggedIn(false);
     };
 
     const loginHandler = () => {
-        setIsloggedIn(true);
+        localStorage.setItem('isLoggedIn', '1'); // store in local storage which is global variable
+        setIsLoggedIn(true);
     }
     return (
     <AuthContext.Provider
@@ -26,8 +36,6 @@ export const AuthContextProvider = (props) => {
         { props.children }
         </AuthContext.Provider >
     )}
-
-
 
 export default AuthContext;
 
